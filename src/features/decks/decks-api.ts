@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { FormValues } from './AddNewDeckForm/AddNewDeckForm';
 
 export const instance = axios.create({
   baseURL: 'https://api.flashcards.andrii.es',
@@ -8,45 +7,53 @@ export const instance = axios.create({
   },
 })
 
-
-type AuthorType = {
-  id: string;
-  name: string;
-};
-
-export type ItemType = {
-  isFavorite: boolean;
-  author: AuthorType;
-  id: string;
-  userId: string;
-  name: string;
-  isPrivate: boolean;
-  cover: string;
-  created: string;
-  updated: string;
-  cardsCount: number;
-};
-
-type PaginationType = {
-  currentPage: number;
-  itemsPerPage: number;
-  totalPages: number;
-  totalItems: number;
-};
-
-type ResponseType = {
-  items: ItemType[];
-  pagination: PaginationType;
-};
-
-
-
-export const decksApi = {
-  getDecks() {
-    return instance.get<ResponseType>('/v2/decks')
+export const decksAPI = {
+  fetchDecks() {
+    return instance.get<FetchDecksResponse>(`v2/decks`)
   },
-  addDeck(data: FormValues) {
-    return instance.post<ItemType>('/v1/decks', data)
-  }
+  addDeck(name: string) {
+    return instance.post<Deck>(`v1/decks`, {
+      name,
+    })
+  },
+  deleteDeck(id: string) {
+    return instance.delete<Deck>(`v1/decks/${id}`)
+  },
+  updateDeck({ id, name }: UpdateDeckParams) {
+    return instance.patch<Deck>(`v1/decks/${id}`, { name })
+  },
 }
 
+export type UpdateDeckParams = {
+  id: string
+  name: string
+}
+
+export type FetchDecksResponse = {
+  items: Deck[]
+  pagination: Pagination
+  maxCardsCount: number
+}
+export type Author = {
+  id: string
+  name: string
+}
+export type Deck = {
+  author: Author
+  id: string
+  userId: string
+  name: string
+  isPrivate: boolean
+  shots: number
+  cover: string
+  rating: number
+  created: string
+  updated: string
+  cardsCount: number
+}
+export type Pagination = {
+  currentPage: number
+  itemsPerPage: number
+  totalPages: number
+  totalItems: number
+}

@@ -1,14 +1,44 @@
-import { AppDispatch } from "../../app/store";
-import { FormValues } from "./AddNewDeckForm/AddNewDeckForm";
-import { decksApi } from "./decks-api";
-import { setDeckAC, setDecksAC } from "./decks-reducer";
+import { Dispatch } from 'redux'
+import { decksAPI, UpdateDeckParams } from './decks-api.ts'
+import { addDeckAC, deleteDeckAC, setDecksAC, updateDeckAC } from './decks-reducer.ts'
+import { setErrorAC, setLoadingAC } from '../../app/app-reducer.ts'
 
-export const getDecksTC = () => (dispatch: AppDispatch) => {
-    decksApi.getDecks()
-        .then(res => dispatch(setDecksAC(res.data.items)))
+interface AxiosError<T> {
+  message: string;
+  response?: {
+    data: T;
+    status: number;
+  };
 }
 
-export const addDeckTC = (data: FormValues) => (dispatch: AppDispatch) => {
-    return decksApi.addDeck(data)
-        .then(res => dispatch(setDeckAC(res.data)))
-} 
+export const fetchDecksTC = () => async (dispatch: Dispatch) => {
+  try {
+    dispatch(setLoadingAC('loading'))
+    const res = await decksAPI.fetchDecks()
+    dispatch(setDecksAC(res.data.items))
+    dispatch(setLoadingAC('succeeded'))
+  } catch (err: unknown) {
+    const AxiosError = err as AxiosError<string>
+    dispatch(setLoadingAC('failed'))
+    dispatch(setErrorAC(AxiosError.message))
+  }
+}
+
+
+export const addDeckTC = (name: string) => async (dispatch: Dispatch) => {
+  return decksAPI.addDeck(name).then((res) => {
+    dispatch(addDeckAC(res.data))
+  })
+}
+
+export const deleteDeckTC = (id: string) => async (dispatch: Dispatch) => {
+  return decksAPI.deleteDeck(id).then((res) => {
+    dispatch(deleteDeckAC(res.data.id))
+  })
+}
+
+export const updateDeckTC = (params: UpdateDeckParams) => async (dispatch: Dispatch) => {
+  return decksAPI.updateDeck(params).then((res) => {
+    dispatch(updateDeckAC(res.data))
+  })
+}
