@@ -3,6 +3,7 @@ import { setStatusAC } from '../../app/app-reducer.ts';
 import { UpdateDeckParams, decksAPI } from './decks-api.ts';
 import { addDeckAC, deleteDeckAC, setDecksAC, updateDeckAC } from './decks-reducer.ts';
 import { isAxiosError } from 'axios';
+import { handleError } from '../../common/utils/handle-error.ts';
 
 interface AxiosError<T> {
   message: string;
@@ -45,18 +46,31 @@ export const updateDeckTC = (params: UpdateDeckParams) => async (dispatch: Dispa
 
   }
   catch (e) {
-    let errorMessage: string
-    if (isAxiosError<ServerError>(e)) {
-      errorMessage = e.response ? e.response.data.errorMessages[0].message : e.message
-    } else {
-      errorMessage = (e as Error).message
-    }
-
-    console.log(errorMessage)
+    handleError(e, dispatch)
   }
-
 }
 
-type ServerError = {
-  errorMessages: { field: string, message: string }[]
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

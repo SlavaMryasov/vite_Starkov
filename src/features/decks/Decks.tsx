@@ -9,6 +9,10 @@ export const Decks = () => {
       <h1>Decks 🐈</h1>
       <AddNewDeckForm />
       <DecksList />
+      <footer>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia ipsa esse repellat dicta vel
+        exercitationem quae fuga et nemo. Error, eligendi a fugiat officiis distinctio rerum cumque culpa
+        doloribus odit!
+      </footer>
     </div>
   )
 }

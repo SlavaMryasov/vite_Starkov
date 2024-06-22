@@ -1,8 +1,8 @@
 import { Equal, Expect } from '../common/utils/ts-helpers.ts'
 
 // task 1
-const getLastItem = (array: any[]) => {
-  return array[array.length - 1]
+const getLastItem = <T>(array: T[]) => {
+  return array[array.length - 1] as T
 }
 
 const item1 = getLastItem(['react', 'typescript'])
